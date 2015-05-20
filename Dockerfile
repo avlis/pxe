@@ -13,6 +13,7 @@ WORKDIR /cloudconfigserver/bin
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/make_dnsmasq_dhcp_reservations.py
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/make_dnsmasq_dhcp_options.py
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/cloudconfigserver.py
+RUN chmod +x *.py
 RUN mkdir /tftp
 WORKDIR /tftp
 RUN wget $MIRROR/debian/dists/$DIST/main/installer-$ARCH/current/images/netboot/debian-installer/$ARCH/pxelinux.0
