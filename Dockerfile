@@ -15,6 +15,7 @@ RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/core
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/make_dnsmasq_dhcp_options.py
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/cloudconfigserver.py
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/startup.sh
+RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/reconfig.sh
 RUN chmod +x *
 WORKDIR /cloudconfigserver/data
 ENTRYPOINT /cloudconfigserver/bin/startup.sh
