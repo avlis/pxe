@@ -1,0 +1,27 @@
+{
+	"common": {
+		"public_ipv4_gw":	"10.100.10.5",
+		"public_ipv4_dns1":	"10.100.10.9",
+		"public_ipv4_dns2":	"10.100.10.9"
+	},
+	"hosts": {
+		"192.168.90.101": {
+				"macaddr":		"e2:29:a2:da:43:b1",
+				"hostname":		"docker-101",
+				"public_ipv4":  "10.100.10.101",
+				"channel":		"stable"
+		},
+		"192.168.90.102": { 
+				"macaddr":		"e2:29:a2:da:43:b2",
+				"hostname":		"docker-102",
+				"public_ipv4":  "10.100.10.102",
+				"channel":		"stable"
+		},
+		"192.168.90.103": { 
+				"macaddr":		"78:31:c1:c3:d3:0e",
+				"hostname":		"docker-103",
+				"public_ipv4":  "10.100.10.103",
+				"channel":		"beta"
+		}
+	}
+}

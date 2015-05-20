@@ -1,0 +1,87 @@
+#cloud-config
+
+hostname: $hostname
+
+coreos:
+   update:
+      reboot-strategy: etcd-lock
+
+   etcd2:
+      # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
+      # specify the intial size of your cluster with ?size=X
+      discovery: https://discovery.etcd.io/<token>
+      advertise-client-urls: http://$private_ipv4:2379
+      initial-advertise-peer-urls: http://$private_ipv4:2380
+      listen-client-urls: http://0.0.0.0:2379
+      listen-peer-urls: http://$private_ipv4:2380
+
+   units:
+      - name: etcd2.service
+        command: start
+      - name: fleet.service
+        command: start
+      - name: 01_br-internal.netdev
+        runtime: true
+        content: |
+            [NetDev]
+            Name=br-internal
+            Kind=bridge
+      - name: 11_br-internal.network
+        runtime: true
+        content: |
+            [Match]
+            Name=br-internal
+            [Network]
+            Address=$private_ipv4/24
+            
+      - name: 02_br-external.netdev
+        runtime: true
+        content: |
+            [NetDev]
+            Name=br-external
+            Kind=bridge
+      - name: 12_br-external.network
+        runtime: true
+        content: |
+            [Match]
+            Name=br-external
+            [Network]
+            Address=$public_ipv4/24
+            Gateway=$public_ipv4_gw
+            DNS=$public_ipv4_dns1
+            DNS=$public_ipv4_dns2
+
+      - name: 03_br-hostonly.netdev
+        runtime: true
+        content: |
+            [NetDev]
+            Name=br-hostonly
+            Kind=bridge
+      - name: 13_br-hostonly.network
+        runtime: true
+        content: |
+            [Match]
+            Name=br-hostonly
+            [Network]
+            Address=192.168.1.1/24
+            
+      - name: 31_enp4s0.network
+        runtime: true
+        content: |
+            [Match]
+            Name=enp4s0
+
+            [Network]
+            Bridge=br-external
+
+      - name: 32_enp6s0.network
+        runtime: true
+        content: |
+            [Match]
+            Name=enp6s0
+
+            [Network]
+            Bridge=br-internal
+
+ssh_authorized_keys:
+   - <your key>

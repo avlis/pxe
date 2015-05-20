@@ -3,27 +3,22 @@ ENV ARCH amd64
 ENV DIST wheezy
 ENV MIRROR http://ftp.nl.debian.org
 RUN apt-get -q update
-RUN apt-get -qy install dnsmasq wget iptables
+RUN apt-get -qy install dnsmasq wget python
 RUN wget --no-check-certificate https://raw.github.com/jpetazzo/pipework/master/pipework
 RUN chmod +x pipework
+RUN mkdir /cloudconfigserver
+RUN mkdir /cloudconfigserver/data
+RUN mkdir /cloudconfigserver/bin
+WORKDIR /cloudconfigserver/bin
+RUN wget --no-check-certificate https://raw.github.com/jpetazzo/pxe/
 RUN mkdir /tftp
 WORKDIR /tftp
-RUN wget $MIRROR/debian/dists/$DIST/main/installer-$ARCH/current/images/netboot/debian-installer/$ARCH/linux
-RUN wget $MIRROR/debian/dists/$DIST/main/installer-$ARCH/current/images/netboot/debian-installer/$ARCH/initrd.gz
 RUN wget $MIRROR/debian/dists/$DIST/main/installer-$ARCH/current/images/netboot/debian-installer/$ARCH/pxelinux.0
+RUN wget http://stable.release.core-os.net/amd64-usr/current/coreos_stable_pxe.vmlinuz
+RUN wget http://stable.release.core-os.net/amd64-usr/current/coreos_stable_pxe_image.cpio.gz
+RUN wget http://beta.release.core-os.net/amd64-usr/current/coreos_beta_pxe.vmlinuz
+RUN wget http://beta.release.core-os.net/amd64-usr/current/coreos_beta_pxe_image.cpio.gz
 RUN mkdir pxelinux.cfg
-RUN printf "DEFAULT linux\nKERNEL linux\nAPPEND initrd=initrd.gz\n" >pxelinux.cfg/default
-CMD \
-    echo Setting up iptables... &&\
-    iptables -t nat -A POSTROUTING -j MASQUERADE &&\
-    echo Waiting for pipework to give us the eth1 interface... &&\
-    /pipework --wait &&\
-    echo Starting DHCP+TFTP server...&&\
-    dnsmasq --interface=eth1 \
-    	    --dhcp-range=192.168.242.2,192.168.242.99,255.255.255.0,1h \
-	    --dhcp-boot=pxelinux.0,pxeserver,192.168.242.1 \
-	    --pxe-service=x86PC,"Install Linux",pxelinux \
-	    --enable-tftp --tftp-root=/tftp/ --no-daemon
-# Let's be honest: I don't know if the --pxe-service option is necessary.
-# The iPXE loader in QEMU boots without it.  But I know how some PXE ROMs
-# can be picky, so I decided to leave it, since it shouldn't hurt.
+RUN printf "DEFAULT coreos-stable\nlabel coreos-stable\n\tmenu default\n\tkernel coreos_stable_pxe.vmlinuz\n\tappend initrd=coreos_stable_pxe_image.cpio.gz console=ttyS1,19200n8 console=tty0 coreos.autologin=ttyS1 coreos.autologin=tty0\n" >pxelinux.cfg/stable
+RUN printf "DEFAULT coreos-beta\nlabel coreos-beta\n\tmenu default\n\tkernel coreos_beta_pxe.vmlinuz\n\tappend initrd=coreos_beta_pxe_image.cpio.gz console=ttyS1,19200n8 console=tty0 coreos.autologin=ttyS1 coreos.autologin=tty0\n" >pxelinux.cfg/beta
+ENTRYPOINT /cloudconfigserver/bin/startup.sh
