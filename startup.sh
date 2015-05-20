@@ -19,6 +19,7 @@ echo making dnsmask config files from pxe_hosts.json file...
 /cloudconfigserver/bin/make_dnsmasq_dhcp_options.py > dhcp_options.dnsmasq
 echo Starting DHCP+TFTP server...
 dnsmasq --interface=eth1 \
+	--user=root \
 	--dhcp-hostsfile=/cloudconfigserver/data/dhcp_reservations.dnsmasq \
 	--dhcp-optsfile=/cloudconfigserver/data/dhcp_options.dnsmasq \
 	--dhcp-leasefile=/cloudconfigserver/data/dhcp_leases.dnsmasq \
