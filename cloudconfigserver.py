@@ -26,7 +26,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		s.end_headers()
 	def do_GET(s):
 		"""Respond to a GET request."""
+		hosts_data={}
+		with open('pxe_hosts.json') as data_file:    
+			hosts_data=json.load(data_file)
 		myClient=s.client_address[0]
+
 		if myClient not in hosts_data['hosts'].keys():
 			#print "error: host %s not found" % (myClient) 
 			s.send_response(404)
@@ -37,9 +41,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			s.send_response(200)
 			s.send_header("Content-type", "text/plain")
 			s.end_headers()
-			hosts_data={}
-			with open('pxe_hosts.json') as data_file:    
-				hosts_data=json.load(data_file)
+
 			myReplacements=[]
 			myReplacements.append( ('\$private_ipv4',myClient) )		
 			for k in hosts_data['common']:
