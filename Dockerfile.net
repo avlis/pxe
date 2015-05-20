@@ -1,6 +1,6 @@
 FROM stackbrew/debian:jessie
-ENV ARCH=amd64
-	DIST=wheezy
+ENV ARCH=amd64 \
+	DIST=wheezy \
 	MIRROR=http://ftp.nl.debian.org
 RUN apt-get -q update && apt-get -qy install dnsmasq wget python
 RUN mkdir -p /cloudconfigserver/bin /cloudconfigserver/data
