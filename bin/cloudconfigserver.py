@@ -4,6 +4,7 @@ import time
 import BaseHTTPServer
 import json
 import re
+from urlparse import urlparse, parse_qs
 
 HOST_NAME = '0.0.0.0' # 
 PORT_NUMBER = 8080 # Maybe set this to 9000.
@@ -29,15 +30,23 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		hosts_data={}
 		with open('pxe_hosts.json') as data_file:    
 			hosts_data=json.load(data_file)
-		myClient=s.client_address[0]
+			
+		myClient=''
+		query_components = parse_qs(urlparse(s.path).query)	
+		if 'override_ipv4' in query_components.keys():
+			myClient=query_components['override_ipv4'][0][:16]
+			print "myclient = %s" % myClient
+
+		isValidIPV4 = re.compile("\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}")
+		if not isValidIPV4.match(myClient):
+			myClient=s.client_address[0][:16]
 
 		if myClient not in hosts_data['hosts'].keys():
-			#print "error: host %s not found" % (myClient) 
 			s.send_response(404)
 			s.send_header("Content-type", "text/plain")
 			s.end_headers()
+			s.wfile.write("#cloud-config\n\n#Please add %s to pxe_hosts.json\n" % myClient)
 		else:
-			#print "sending config to host %s" % (myClient) 
 			s.send_response(200)
 			s.send_header("Content-type", "text/plain")
 			s.end_headers()
