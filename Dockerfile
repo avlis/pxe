@@ -24,4 +24,7 @@ RUN ln -s /cloudconfigserver/data/coreos_stable_pxe_image.cpio.gz
 RUN ln -s /cloudconfigserver/data/coreos_beta_pxe.vmlinuz
 RUN ln -s /cloudconfigserver/data/coreos_beta_pxe_image.cpio.gz
 RUN mkdir pxelinux.cfg
+WORKDIR /tftp/pxelinux.cfg
+RUN ln -s /cloudconfigserver/data/pxelinux.cfg.stable stable
+RUN ln -s /cloudconfigserver/data/pxelinux.cfg.beta beta
 ENTRYPOINT /cloudconfigserver/bin/startup.sh
