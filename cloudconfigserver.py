@@ -5,11 +5,9 @@ import BaseHTTPServer
 import json
 import re
 
-
-
 HOST_NAME = '0.0.0.0' # 
 PORT_NUMBER = 8080 # Maybe set this to 9000.
-hosts_data={}
+
 
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
@@ -39,7 +37,9 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			s.send_response(200)
 			s.send_header("Content-type", "text/plain")
 			s.end_headers()
-
+			hosts_data={}
+			with open('pxe_hosts.json') as data_file:    
+				hosts_data=json.load(data_file)
 			myReplacements=[]
 			myReplacements.append( ('\$private_ipv4',myClient) )		
 			for k in hosts_data['common']:
@@ -52,9 +52,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			s.wfile.write(myBuffer)
 
 if __name__ == '__main__':
-	with open('pxe_hosts.json') as data_file:    
-		hosts_data=json.load(data_file)
-
 	server_class = BaseHTTPServer.HTTPServer
 	httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
 	print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)

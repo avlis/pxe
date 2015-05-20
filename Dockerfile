@@ -16,16 +16,5 @@ RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/core
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/cloudconfigserver.py
 RUN wget --no-check-certificate https://raw.githubusercontent.com/avlis/pxe/coreOS/startup.sh
 RUN chmod +x *
-RUN mkdir /tftp
-WORKDIR /tftp
-RUN wget $MIRROR/debian/dists/$DIST/main/installer-$ARCH/current/images/netboot/debian-installer/$ARCH/pxelinux.0
-RUN ln -s /cloudconfigserver/data/coreos_stable_pxe.vmlinuz 
-RUN ln -s /cloudconfigserver/data/coreos_stable_pxe_image.cpio.gz
-RUN ln -s /cloudconfigserver/data/coreos_beta_pxe.vmlinuz
-RUN ln -s /cloudconfigserver/data/coreos_beta_pxe_image.cpio.gz
-RUN mkdir pxelinux.cfg
-WORKDIR /tftp/pxelinux.cfg
-RUN ln -s /cloudconfigserver/data/pxelinux.cfg.stable stable
-RUN ln -s /cloudconfigserver/data/pxelinux.cfg.beta beta
 WORKDIR /cloudconfigserver/data
 ENTRYPOINT /cloudconfigserver/bin/startup.sh
