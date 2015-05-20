@@ -9,7 +9,7 @@ cd /cloudconfigserver/data
 /cloudconfigserver/bin/make_dnsmasq_dhcp_options.py > dhcp_options.dnsmasq
 dnsmasq --interface=eth1 \
 	--dhcp-hostsfile=/cloudconfigserver/data/dhcp_reservations.dnsmasq \
-	--dhcp-optsfile=/cloudconfigserver/data/dhcp_options.dnsmasq \
+	--dhcp-optsfile=/cloudconfigserver/data/dhcp_optionsgit.dnsmasq \
 	--dhcp-range=$mySUBNET.10,$mySUBNET.250,255.255.255.0,1h \
 	--dhcp-boot=pxelinux.0,pxeserver,$myIP \
 	--pxe-service=x86PC,"boot coreOS",pxelinux \
