@@ -20,7 +20,8 @@ echo making dnsmask config files from pxe_hosts.json file...
 echo Starting DHCP+TFTP server...
 dnsmasq --interface=eth1 \
 	--dhcp-hostsfile=/cloudconfigserver/data/dhcp_reservations.dnsmasq \
-	--dhcp-optsfile=/cloudconfigserver/data/dhcp_optionsgit.dnsmasq \
+	--dhcp-optsfile=/cloudconfigserver/data/dhcp_options.dnsmasq \
+	--dhcp-leasefile=/cloudconfigserver/data/dhcp_leases.dnsmasq \
 	--dhcp-range=$mySUBNET.10,$mySUBNET.250,255.255.255.0,1h \
 	--dhcp-boot=pxelinux.0,pxeserver,$myIP \
 	--pxe-service=x86PC,"boot coreOS",pxelinux \

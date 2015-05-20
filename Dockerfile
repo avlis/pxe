@@ -27,4 +27,5 @@ RUN mkdir pxelinux.cfg
 WORKDIR /tftp/pxelinux.cfg
 RUN ln -s /cloudconfigserver/data/pxelinux.cfg.stable stable
 RUN ln -s /cloudconfigserver/data/pxelinux.cfg.beta beta
+WORKDIR /cloudconfigserver/data
 ENTRYPOINT /cloudconfigserver/bin/startup.sh
