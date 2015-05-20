@@ -6,7 +6,7 @@ case "$1" in
                 echo "I need one parameter: start | stop | status | enter | logs"
         ;;
 	start)
-                if [ -z "$PXECID" ]; then
+                if [ ! -z "$PXECID" ]; then
                         echo it looks like there is already a pxe container running...
                 	exit 1
 		fi
