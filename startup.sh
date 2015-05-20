@@ -6,6 +6,7 @@ mySUBNET=$(echo $myIP | cut -d '.' -f 1,2,3)
 echo Got IP $myIP, on subnet $mySUBNET 
 echo configuring this instance...
 mkdir -p /cloudconfigserver/data/tftp/pxelinux.cfg
+mkdir -p /cloudconfigserver/data/dnsmasq
 cd /cloudconfigserver/data/tftp
 echo downloading pxe if needed
 [ ! -f pxelinux.0 ] && wget $MIRROR/debian/dists/$DIST/main/installer-$ARCH/current/images/netboot/debian-installer/$ARCH/pxelinux.0
@@ -19,14 +20,14 @@ printf "DEFAULT coreos-stable\nlabel coreos-stable\n\tmenu default\n\tkernel cor
 printf "DEFAULT coreos-beta\nlabel coreos-beta\n\tmenu default\n\tkernel coreos_beta_pxe.vmlinuz\n\tappend initrd=coreos_beta_pxe_image.cpio.gz console=ttyS1,19200n8 console=tty0 coreos.autologin=ttyS1 coreos.autologin=tty0 cloud-config-url=http://$myIP\n" >pxelinux.cfg/beta
 echo making dnsmask config files from pxe_hosts.json file...
 cd /cloudconfigserver/data
-/cloudconfigserver/bin/make_dnsmasq_dhcp_reservations.py > dhcp_reservations.dnsmasq
-/cloudconfigserver/bin/make_dnsmasq_dhcp_options.py > dhcp_options.dnsmasq
+/cloudconfigserver/bin/make_dnsmasq_dhcp_reservations.py > dnsmasq/dhcp_reservations
+/cloudconfigserver/bin/make_dnsmasq_dhcp_options.py > dnsmasq/dhcp_options
 echo Starting DHCP+TFTP server...
 dnsmasq --interface=eth1 \
 	--user=root \
-	--dhcp-hostsfile=/cloudconfigserver/data/dhcp_reservations.dnsmasq \
-	--dhcp-optsfile=/cloudconfigserver/data/dhcp_options.dnsmasq \
-	--dhcp-leasefile=/cloudconfigserver/data/dhcp_leases.dnsmasq \
+	--dhcp-hostsfile=/cloudconfigserver/data/dnsmasq/dhcp_reservations \
+	--dhcp-optsfile=/cloudconfigserver/data/dnsmasq/dhcp_options \
+	--dhcp-leasefile=/cloudconfigserver/data/dnsmasq/dhcp_leases \
 	--dhcp-range=$mySUBNET.10,$mySUBNET.250,255.255.255.0,1h \
 	--dhcp-boot=pxelinux.0,pxeserver,$myIP \
 	--pxe-service=x86PC,"boot coreOS",pxelinux \
