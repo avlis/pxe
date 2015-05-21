@@ -29,6 +29,10 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	def do_GET(s):
 		"""Respond to a GET request."""
 		hosts_data={}
+		if not os.path.isfile('pxe_hosts.json'):
+			s.wfile.write("#cloud-config\n\n#Please check your configuration folder, can't find the file [pxe_hosts.json]\n")
+			return
+				
 		with open('pxe_hosts.json') as data_file:    
 			hosts_data=json.load(data_file)
 			
