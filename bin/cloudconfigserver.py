@@ -40,7 +40,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		query_components = parse_qs(urlparse(s.path).query)	
 		if 'override_ipv4' in query_components.keys():
 			myClient=query_components['override_ipv4'][0][:16]
-			print "myclient = %s" % myClient
 
 		isValidIPV4 = re.compile("\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}")
 		if not isValidIPV4.match(myClient):
@@ -63,7 +62,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 					newrep=('\\'+k, hosts_data['common'][k])
 					myReplacements.append( newrep )
 			for k in hosts_data['hosts'][myClient]:
-				print k,k[:1]
 				if k[:1]=="$":
 					newrep=('\\'+k, hosts_data['hosts'][myClient][k])
 					myReplacements.append( newrep )
