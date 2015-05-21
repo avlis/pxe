@@ -26,10 +26,9 @@ pxelinux is configured to offer two config files, stable or beta, based on the c
 It will also get the latest coreos release (stable and beta) and a pxelinux.0, if not present on the data folder.
 
 When the host boots, it will get a cloud-config file from this same container, via a python web server script running on port 8080.
-That script gets the client private IP address of the request, and replaces the variables on the *default.yaml* file
-(represented by a `$<variable>`) for that host.
+That script gets the client private IP address of the request, and replaces the variables on the *default.yaml* file, or from a custom yaml template, (represented by a `$<variable>`) for that host.
   
-So you just have customise your *default.yaml* for your hardware, and add hosts to your *pxe_hosts.json*.
+So you just have customise your *default.yaml* (or create multiple .yaml files) for your hardware, and add hosts to your *pxe_hosts.json*.
 
 As the original project, you need to setup on the host a bridge that has access to the pxe network, and then connect it to the container via pipework.
 
@@ -70,7 +69,7 @@ sudo /root/bin/pipework br-internal $PXECID $VLAN_ADDR/24
 
 check out the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/master/utilities/manage_pxe_container) shell script on the utilites folder (on git, not on the container).
 
-- make sure you have a properly indented *default.yaml*, and a properly written *pxe_hosts.json*.
+- make sure you have properly indented *.yaml* files, and a properly written *pxe_hosts.json*.
 - a while after the container starts, you should have 5 files on <data folder>/tftp: pxelinux.0 and 4 coreosfiles:  coreos_[beta|stable]_pxe[.vmlinuz|_image.cpio.gz]
 - you can manually update those files and reboot your host, no need to restart the pxe_coreos container.
 - check the output of the startup script with the docker logs command.
