@@ -59,11 +59,14 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			myReplacements=[]
 			myReplacements.append( ('\$private_ipv4',myClient) )		
 			for k in hosts_data['common']:
-				newrep=('\$'+k, hosts_data['common'][k])
-				myReplacements.append( newrep )
+				if k[:1]=="$":
+					newrep=('\\'+k, hosts_data['common'][k])
+					myReplacements.append( newrep )
 			for k in hosts_data['hosts'][myClient]:
-				newrep=('\$'+k, hosts_data['hosts'][myClient][k])
-				myReplacements.append( newrep )
+				print k,k[:1]
+				if k[:1]=="$":
+					newrep=('\\'+k, hosts_data['hosts'][myClient][k])
+					myReplacements.append( newrep )
 			if 'template' in hosts_data['hosts'][myClient]:
 				templateFile=hosts_data['hosts'][myClient]['template']
 			else:
