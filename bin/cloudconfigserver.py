@@ -59,7 +59,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			for k in hosts_data['hosts'][myClient]:
 				newrep=('\$'+k, hosts_data['hosts'][myClient][k])
 				myReplacements.append( newrep )
-			myBuffer=s.load_file('default.yaml',myReplacements)		
+			if 'template' in hosts_data['hosts'][myClient]:
+				templateFile=hosts_data['hosts'][myClient]['template']
+			else:
+				templateFile='default.yaml'
+			myBuffer=s.load_file(templateFile,myReplacements)		
 			s.wfile.write(myBuffer)
 
 if __name__ == '__main__':
