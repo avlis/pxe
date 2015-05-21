@@ -5,6 +5,7 @@ import BaseHTTPServer
 import json
 import re
 from urlparse import urlparse, parse_qs
+import os.path
 
 HOST_NAME = '0.0.0.0' # 
 PORT_NUMBER = 8080 # Maybe set this to 9000.
@@ -45,7 +46,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			s.send_response(404)
 			s.send_header("Content-type", "text/plain")
 			s.end_headers()
-			s.wfile.write("#cloud-config\n\n#Please add %s to pxe_hosts.json\n" % myClient)
+			s.wfile.write("#cloud-config\n\n#Please add %s to the file [pxe_hosts.json].\n" % myClient)
 		else:
 			s.send_response(200)
 			s.send_header("Content-type", "text/plain")
@@ -63,8 +64,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 				templateFile=hosts_data['hosts'][myClient]['template']
 			else:
 				templateFile='default.yaml'
-			myBuffer=s.load_file(templateFile,myReplacements)		
-			s.wfile.write(myBuffer)
+			if os.path.isfile(templateFile):
+				myBuffer=s.load_file(templateFile,myReplacements)		
+				s.wfile.write(myBuffer)
+			else:
+				s.wfile.write("#cloud-config\n\n#Please check the entry for the host %s on pxe_hosts.json, I can't find the template file [%s].\n" % (myClient,templateFile))
 
 if __name__ == '__main__':
 	server_class = BaseHTTPServer.HTTPServer
