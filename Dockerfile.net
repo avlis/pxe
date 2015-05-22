@@ -5,12 +5,12 @@ ENV ARCH=amd64 \
 RUN apt-get -q update && apt-get -qy install dnsmasq wget python
 RUN mkdir -p /cloudconfigserver/bin /cloudconfigserver/data
 WORKDIR /cloudconfigserver/bin
-RUN wget https://raw.githubusercontent.com/avlis/pxe/coreOS/bin/pipework
-RUN wget https://raw.githubusercontent.com/avlis/pxe/coreOS/bin/make_dnsmasq_dhcp_reservations.py
-RUN wget https://raw.githubusercontent.com/avlis/pxe/coreOS/bin/make_dnsmasq_dhcp_options.py
-RUN wget https://raw.githubusercontent.com/avlis/pxe/coreOS/bin/cloudconfigserver.py
-RUN wget https://raw.githubusercontent.com/avlis/pxe/coreOS/bin/startup.sh
-RUN wget https://raw.githubusercontent.com/avlis/pxe/coreOS/bin/reconfig.sh
+RUN wget https://raw.githubusercontent.com/avlis/pxe_coreos/master/bin/bin/pipework
+RUN wget https://raw.githubusercontent.com/avlis/pxe_coreos/master/bin/bin/make_dnsmasq_dhcp_reservations.py
+RUN wget https://raw.githubusercontent.com/avlis/pxe_coreos/master/bin/bin/make_dnsmasq_dhcp_options.py
+RUN wget https://raw.githubusercontent.com/avlis/pxe_coreos/master/bin/bin/cloudconfigserver.py
+RUN wget https://raw.githubusercontent.com/avlis/pxe_coreos/master/bin/bin/startup.sh
+RUN wget https://raw.githubusercontent.com/avlis/pxe_coreos/master/bin/bin/reconfig.sh
 RUN chmod +x *
 WORKDIR /cloudconfigserver/data
 ENTRYPOINT /cloudconfigserver/bin/startup.sh
