@@ -5,9 +5,9 @@ Forked from the nice work at [jpetazzo/pxe](https://github.com/jpetazzo/pxe).
 
 ## Notes:
 - developed using IBM blades, with a serial console on ttyS1, and a private VLAN on ethernet 2, that is used for DHCP/PXE and coreOS comms only.
-- "public" IP address is set by cloud-config, not DHCP.
+- "public" IP address of hosts (eth0) is set by cloud-config (provided by this container, customised for each host).
 - DHCP subnet is currently hardcoded as a /24, from .10 to .250; but it should/could be even smaller, as we use reservations?... 
-- Yes, it sounds silly to read the config files on each request on the httpserver, but this way you can change the config files on the data folder and not have to reload the container... this should only happen when a host boots.
+- Yes, it sounds silly to read the config files on each request on the httpserver that serves cloud-configs, but this way you can change the config files on the data folder and not have to reload the container...  Also, this reloading this should only happen when a host boots.
 
 ## Enhancements over the original project:
 - IP address and subnet for DHCP server and range are extracted from the IP address set on eth1 via pipework.
@@ -18,19 +18,20 @@ Forked from the nice work at [jpetazzo/pxe](https://github.com/jpetazzo/pxe).
 - currently glued to the host that contains the data folder. find better, more independent storage option.
 - don't run more than one of these on the same data folder...
 - automatic process to update the coreos pxe files?
+- web server should be able to provide static files also.
 
 ## HOW DOES IT WORK:
 When the container starts, it processes the *pxe_hosts.json* file, to create a *dhcp_reservations* and *dhcp_options* files for dnsmasq.
 pxelinux is configured to offer two config files, stable or beta, based on the channel you choose for your host. 
 
-It will also get the latest coreos release (stable and beta) and a pxelinux.0, if not present on the data folder.
+It will also get the latest coreos release (stable and beta) and a pxelinux.0, if any of these files is not present on the data folder.
 
-When the host boots, it will get a cloud-config file from this same container, via a python web server script running on port 8080.
+When the host boots, it will request a cloud-config file from this same container, provided by a python web server script running on port 8080.
 That script gets the client private IP address of the request, and replaces the variables on the *default.yaml* file, or from a custom yaml template, (represented by a `$<variable>`) for that host.
   
-So you just have customise your *default.yaml* (or create multiple .yaml files) for your hardware, and add hosts to your *pxe_hosts.json*.
+So you just have customise your *default.yaml* (or create multiple .yaml files if needed) for your hardware, and add hosts to your *pxe_hosts.json*.
 
-As the original project, you need to setup on the host a bridge that has access to the pxe network, and then connect it to the container via pipework.
+As the original project, you need to setup on the host a bridge that has access to the pxe network, and then connect it to the container via pipework. If you see the *default.yaml.sample* file, the networking stuff there already sets a coreOS host with bridges in front of both ethernet interfaces of these IBM blades. 
 
 ## TO BUILD:
 two options: git clone this repo: 
@@ -52,7 +53,7 @@ $ docker build -t pxe_coreos .
 ## TO LAUNCH:
 
 make sure you have a proper *default.yaml* and a *pxe_hosts.json* file on your data folder!
-(in this example, it's in /home/core/pxe_coreos.data)
+(in this example, it's in /home/core/pxe_coreos.data). Two samples are provided in this repo.
 
 you can use a script similar to the one below (or the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/master/utilities/manage_pxe_container) one) to start the container:
 ```#!/bin/bash
