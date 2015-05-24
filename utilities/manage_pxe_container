@@ -24,7 +24,8 @@ case "$1" in
                         echo could not find pxe container.
                 	exit 1
                 fi
-                docker exec -i -t ${PXECID} bash
+		[ -z "$2" ] && PXESHELL=bash || PXESHELL="$2"
+                docker exec -i -t ${PXECID} ${PXESHELL}
         ;;
         stop)
                 if [ -z "${PXECID}" ]; then
