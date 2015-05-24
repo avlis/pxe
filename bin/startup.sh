@@ -9,7 +9,7 @@ mkdir -p /cloudconfigserver/data/tftp/pxelinux.cfg
 mkdir -p /cloudconfigserver/data/dnsmasq
 cd /cloudconfigserver/data/tftp
 echo downloading pxe if needed
-[ ! -f pxelinux.0 ] && wget $MIRROR/debian/dists/$DIST/main/installer-$ARCH/current/images/netboot/debian-installer/$ARCH/pxelinux.0
+[ ! -f pxelinux.0 ] && wget http://ftp.debian.org/debian/dists/stable/main/installer-amd64/current/images/netboot/pxelinux.0
 echo downloading coreos if needed
 [ ! -f coreos_stable_pxe.vmlinuz ] && wget http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz -O coreos_stable_pxe.vmlinuz
 [ ! -f coreos_stable_pxe_image.cpio.gz ] &&  wget http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz -O coreos_stable_pxe_image.cpio.gz

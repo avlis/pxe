@@ -1,8 +1,5 @@
-FROM stackbrew/debian:jessie
-ENV ARCH=amd64 \
-	DIST=wheezy \
-	MIRROR=http://ftp.nl.debian.org
-RUN apt-get -q update && apt-get -qy install dnsmasq wget python
+FROM alpine:latest
+RUN apk add --update dnsmasq wget python && rm -rf /var/cache/apk/*
 RUN mkdir -p /cloudconfigserver/bin /cloudconfigserver/data
 COPY bin/* /cloudconfigserver/bin/
 RUN chmod +x /cloudconfigserver/bin/*
