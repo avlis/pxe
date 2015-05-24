@@ -1,37 +1,47 @@
-#!/bin/bash
-VLAN_ADDR=192.168.90.2
-PXECID=$(docker ps --no-trunc | grep 'pxe_coreos:latest' | awk '{print $1}')
+#!/bin/sh
+[ -z "${PXE_VLAN_ADDR}" ] && PXE_VLAN_ADDR=192.168.90.2
+[ -z "${PXE_IMAGE_NAME}" ] && PXE_IMAGE_NAME=pxe_coreos
+PXECID=$(docker ps --no-trunc | grep "${PXE_IMAGE_NAME}:latest" | awk '{print $1}')
 case "$1" in
         '')
                 echo "I need one parameter: start | stop | status | enter | logs"
         ;;
 	start)
-                if [ ! -z "$PXECID" ]; then
+                if [ ! -z "${PXECID}" ]; then
                         echo it looks like there is already a pxe container running...
                 	exit 1
 		fi
-		PXECID=$(docker run -v /home/core/pxe_coreos.data:/cloudconfigserver/data -d pxe_coreos)
-		if [ -z "$PXECID" ]; then
+		mkdir -p /home/core/${PXE_IMAGE_NAME}.data
+		PXECID=$(docker run -v /home/core/${PXE_IMAGE_NAME}.data:/cloudconfigserver/data -d ${PXE_IMAGE_NAME})
+		if [ -z "${PXECID}" ]; then
    			echo something bad happened, container not launched.
    			exit 1
 		fi
-		sudo /root/bin/pipework br-internal $PXECID $VLAN_ADDR/24
+		sudo /root/bin/pipework br-internal ${PXECID} ${PXE_VLAN_ADDR}/24
 	;;
-        enter)
-                if [ -z "$PXECID" ]; then
+    	enter)
+                if [ -z "${PXECID}" ]; then
                         echo could not find pxe container.
-                exit 1
+                	exit 1
                 fi
-                docker exec -i -t $PXECID bash
+                docker exec -i -t ${PXECID} bash
+        ;;
+        stop)
+                if [ -z "${PXECID}" ]; then
+                        echo could not find pxe container.
+                        exit 1
+                fi
+                docker stop ${PXECID}
+		[ "$2" == "rm" ] && docker rm ${PXECID}
         ;;
 	status)
-		docker ps -a | grep -e 'CONTAINER\|pxe_coreos'
+		docker ps -a | grep -e "CONTAINER\|${PXE_IMAGE_NAME}"
 	;;
 	*)
-		if [ -z "$PXECID" ]; then
+		if [ -z "${PXECID}" ]; then
    			echo could not find pxe container.
-   		exit 1
+   			exit 1
 		fi
-		docker $1 $PXECID
+		docker $1 ${PXECID}
 	;;
 esac
