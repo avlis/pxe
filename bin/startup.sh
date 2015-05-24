@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 echo Waiting for pipework to give us the eth1 interface... 
 /cloudconfigserver/bin/pipework --wait
 myIP=$(ip addr show dev eth1 | awk -F '[ /]+' '/global/ {print $3}')
