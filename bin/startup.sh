@@ -24,7 +24,6 @@ cd /cloudconfigserver/data
 /cloudconfigserver/bin/make_dnsmasq_dhcp_options.py > dnsmasq/dhcp_options
 echo Starting DHCP+TFTP server...
 dnsmasq --interface=eth1 \
-	--user=root \
 	--dhcp-hostsfile=/cloudconfigserver/data/dnsmasq/dhcp_reservations \
 	--dhcp-optsfile=/cloudconfigserver/data/dnsmasq/dhcp_options \
 	--dhcp-leasefile=/cloudconfigserver/data/dnsmasq/dhcp_leases \

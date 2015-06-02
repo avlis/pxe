@@ -58,7 +58,7 @@ make sure you have a proper *default.yaml* and a *pxe_hosts.json* file on your d
 you can use a script similar to the one below (or the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/master/utilities/manage_pxe_container) one) to start the container:
 ```#!/bin/bash
 VLAN_ADDR=192.168.90.2
-PXECID=$(docker run -v /home/core/pxe_coreos.data:/cloudconfigserver/data -d pxe_coreos)
+PXECID=$(docker run --cap-add NET_ADMIN -v /home/core/pxe_coreos.data:/cloudconfigserver/data -d pxe_coreos)
 if [ -z "$PXECID" ]; then
    echo something bad happened, container not launched.
    exit 1

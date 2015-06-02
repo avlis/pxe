@@ -12,7 +12,7 @@ case "$1" in
                 	exit 1
 		fi
 		mkdir -p /home/core/${PXE_IMAGE_NAME}.data
-		PXECID=$(docker run -v /home/core/${PXE_IMAGE_NAME}.data:/cloudconfigserver/data -d ${PXE_IMAGE_NAME})
+		PXECID=$(docker run --cap-add NET_ADMIN -v /home/core/${PXE_IMAGE_NAME}.data:/cloudconfigserver/data -d ${PXE_IMAGE_NAME})
 		if [ -z "${PXECID}" ]; then
    			echo something bad happened, container not launched.
    			exit 1
