@@ -66,7 +66,7 @@ fi
 sudo /root/bin/pipework br-internal $PXECID $VLAN_ADDR/24
 ```
 
-## MANAGENENT & TROUBLESHOOTING:
+## MANAGEMENT & TROUBLESHOOTING:
 
 check out the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/master/utilities/manage_pxe_container) shell script on the utilites folder (on git, not on the container).
 
