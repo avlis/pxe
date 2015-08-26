@@ -11,7 +11,7 @@ case "$1" in
 esac
 
 IFNAME=$1
-GUESTNAME=$2
+GUESTNAME=docker-$2
 IPADDR=$3
 MACADDR=$4
 
