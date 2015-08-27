@@ -88,7 +88,7 @@ docker exec -it $PXECID /bin/sh /cloudconfigserver/bin/reconfig.sh
 
 ## PROTIP
 
-Get a coreos container up and ready for running pxe_coreos using yhis cloud config.
+Get a coreos container up and ready for running pxe_coreos using this cloud config.
 
 ```
 #cloud-config
@@ -113,7 +113,7 @@ coreos:
       runtime: true
       content: |
         [Match]
-        Name=br0
+        Name=br-internal
 
         [Network]
         DNS=1.2.3.4
