@@ -99,7 +99,7 @@ coreos:
       runtime: true
       content: |
         [NetDev]
-        Name=br-inernal
+        Name=br-internal
         Kind=bridge
     - name: eth0.network
       runtime: true
