@@ -85,3 +85,37 @@ check out the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/ma
 ```
 docker exec -it $PXECID /bin/sh /cloudconfigserver/bin/reconfig.sh
 ```
+
+## PROTIP
+
+Get a coreos container up and ready for running pxe_coreos using yhis cloud config.
+
+```
+#cloud-config
+
+coreos:
+  units:
+    - name: br-internal.netdev
+      runtime: true
+      content: |
+        [NetDev]
+        Name=br-inernal
+        Kind=bridge
+    - name: eth0.network
+      runtime: true
+      content: |
+        [Match]
+        Name=eth0
+
+        [Network]
+        Bridge=br-internal
+    - name: br-internal.network
+      runtime: true
+      content: |
+        [Match]
+        Name=br0
+
+        [Network]
+        DNS=1.2.3.4
+        Address=10.0.2.2/24
+```
