@@ -70,7 +70,7 @@ sudo /root/bin/pipework br-internal $PXECID $VLAN_ADDR/24
 
 check out the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/master/utilities/manage_pxe_container) shell script on the utilites folder (on git, not on the container).
 
-- make sure you have properly indented *.yaml* files, and a properly written *pxe_hosts.json*.
+- make sure you have properly indented *.yaml* files, and a properly written (validate to be sure) *pxe_hosts.json* copied to the data dir
 - a while after the container starts, you should have 5 files on <data folder>/tftp: pxelinux.0 and 4 coreosfiles:  coreos_[beta|stable]_pxe[.vmlinuz|_image.cpio.gz]
 - you can manually update those files and reboot your host, no need to restart the pxe_coreos container.
 - check the output of the startup script with the docker logs command.
