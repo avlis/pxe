@@ -63,7 +63,7 @@ if [ -z "$PXECID" ]; then
    echo something bad happened, container not launched.
    exit 1
 fi
-sudo /root/bin/pipework br-internal $PXECID $VLAN_ADDR/24
+sudo /home/core/pxe_coreos/bin/pipework br-internal $PXECID $VLAN_ADDR/24
 ```
 
 ## MANAGEMENT & TROUBLESHOOTING:
@@ -81,3 +81,6 @@ check out the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/ma
 - for pxe stuff... tcpdump & wireshark are your friends...
 - the httpserver reloads the config files at each request, but dnsmasq doesn't: you have to restart the container, or 
   enter the container and execute the */cloudconfigserver/bin/reconfig.sh* script.
+```
+docker exec -it $PXECID /bin/sh /cloudconfigserver/bin/reconfig.sh
+```
