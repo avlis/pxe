@@ -63,14 +63,15 @@ if [ -z "$PXECID" ]; then
    echo something bad happened, container not launched.
    exit 1
 fi
-sudo /root/bin/pipework br-internal $PXECID $VLAN_ADDR/24
+sudo /home/core/pxe_coreos/bin/pipework br-internal $PXECID $VLAN_ADDR/24
 ```
 
 ## MANAGEMENT & TROUBLESHOOTING:
 
 check out the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/master/utilities/manage_pxe_container) shell script on the utilites folder (on git, not on the container).
 
-- make sure you have properly indented *.yaml* files, and a properly written *pxe_hosts.json*.
+- make sure you have properly indented *.yaml* files, and a properly written (validate to be sure) *pxe_hosts.json* copied to the data dir.
+- if running on a vm (e.g. virtualbox) make sure the bridged interface is in promiscuous mode so non bound ips are recieveing tftp requests.
 - a while after the container starts, you should have 5 files on <data folder>/tftp: pxelinux.0 and 4 coreosfiles:  coreos_[beta|stable]_pxe[.vmlinuz|_image.cpio.gz]
 - you can manually update those files and reboot your host, no need to restart the pxe_coreos container.
 - check the output of the startup script with the docker logs command.
@@ -81,3 +82,40 @@ check out the [manage_pxe_container](https://github.com/avlis/pxe_coreos/blob/ma
 - for pxe stuff... tcpdump & wireshark are your friends...
 - the httpserver reloads the config files at each request, but dnsmasq doesn't: you have to restart the container, or 
   enter the container and execute the */cloudconfigserver/bin/reconfig.sh* script.
+```
+docker exec -it $PXECID /bin/sh /cloudconfigserver/bin/reconfig.sh
+```
+
+## PROTIP
+
+Get a coreos container up and ready for running pxe_coreos using this cloud config.
+
+```
+#cloud-config
+
+coreos:
+  units:
+    - name: br-internal.netdev
+      runtime: true
+      content: |
+        [NetDev]
+        Name=br-internal
+        Kind=bridge
+    - name: eth0.network
+      runtime: true
+      content: |
+        [Match]
+        Name=eth0
+
+        [Network]
+        Bridge=br-internal
+    - name: br-internal.network
+      runtime: true
+      content: |
+        [Match]
+        Name=br-internal
+
+        [Network]
+        DNS=1.2.3.4
+        Address=10.0.2.2/24
+```
